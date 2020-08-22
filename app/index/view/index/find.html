@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/static/layim/css/layui.css" media="all">
+    <link rel="stylesheet" href="/static/layim/css/default.css" media="all">
+</head>
+<body>
+<form class="layui-form" action="">
+    <div class="layui-form-item account-search">
+        <label class="layui-form-label">账号</label>
+        <div class="layui-input-block">
+            <input type="text" name="account" lay-verify="required" autocomplete="off" placeholder="请输入账号" class="layui-input account-search-account">
+            <button type="button" class="layui-btn account-search-submit" lay-submit="" lay-filter="search" data-type="add">查找</button>
+            <button type="reset" class="layui-btn layui-btn-primary account-search-account-reset">重置</button>
+        </div>
+    </div>
+</form>
+
+<script src="/static/layim/layui.js" charset="utf-8"></script>
+<script src="/static/common/common.js"></script>
+<script src="/static/common/websocket.js"></script>
+<script>
+    layui.use(['form', 'layim'], function () {
+        ws.init({
+            url: "ws.an0nymou5.com/ws/im",
+            token: window.encodeURIComponent(common.getCookie('token'))
+        }).connect();
+
+        ws.onmessage = function (message) {
+            let response = JSON.parse(message.data),
+                cmd = response.cmd,
+                data = response.data,
+                contentData = data.data,
+                ext = response.ext;
+
+            if (cmd === 'member.editSignature') {
+                if (data.status === 1) {
+                    msg = '修改签名成功';
+                    icon = 1;
+                } else {
+                    msg = data.message;
+                    icon = 2;
+
+                }
+                layer.msg(msg, {
+                    icon: icon,
+                    time: 2000
+                });
+            }
+        };
+        ws.onopen = function () {
+            let data = {'cmd': 'common.connect'};
+            this.send(JSON.stringify(data));
+        };
+        var layim = layui.layim;
+        var $ = layui.jquery, active = {
+            chat: function () {
+                //自定义会话
+                layim.chat({
+                    name: '小闲'
+                    , type: 'friend'
+                    , avatar: '//tva3.sinaimg.cn/crop.0.0.180.180.180/7f5f6861jw1e8qgp5bmzyj2050050aa8.jpg'
+                    , id: 1008612
+                });
+                layer.msg('也就是说，此人可以不在好友面板里');
+            },
+            message: function () {
+            },
+            messageAudio: function () {
+                //接受音频消息
+                layim.getMessage({
+                    username: "林心如"
+                    , avatar: "//tp3.sinaimg.cn/1223762662/180/5741707953/0"
+                    , id: "76543"
+                    , type: "friend"
+                    , content: "audio[http://gddx.sc.chinaz.com/Files/DownLoad/sound1/201510/6473.mp3]"
+                    , timestamp: new Date().getTime()
+                });
+            },
+            messageVideo: function () {
+                //接受视频消息
+                layim.getMessage({
+                    username: "林心如"
+                    , avatar: "//tp3.sinaimg.cn/1223762662/180/5741707953/0"
+                    , id: "76543"
+                    , type: "friend"
+                    , content: "video[http://www.w3school.com.cn//i/movie.ogg]"
+                    , timestamp: new Date().getTime()
+                });
+            },
+            messageTemp: function () {
+                //接受临时会话消息
+                layim.getMessage({
+                    username: "小酱"
+                    , avatar: "//tva1.sinaimg.cn/crop.7.0.736.736.50/bd986d61jw8f5x8bqtp00j20ku0kgabx.jpg"
+                    , id: "198909151014"
+                    , type: "friend"
+                    , content: "临时：" + new Date().getTime()
+                });
+            },
+            add: function () {
+                let userInfo = this;
+                layim.add({
+                    type: 'friend',
+                    username: this.username,
+                    avatar: this.avatar,
+                    submit: function (group, remark, index) {
+                        $.ajax({
+                            url: "{:url('api/friendApi/addFriend')}",
+                            data: {'friendId': userInfo.id, 'groupId': group, 'remark': remark},
+                            type: "Post",
+                            dataType: "json",
+                            success: function (data) {
+                                if (data.code === 100000) {
+                                    var msg = '好友申请已发送，请等待对方确认';
+                                } else {
+                                    var msg = data.message;
+                                }
+                                layer.msg(msg, {icon: 1, shade: 0.5, time: 1000}, function () {
+                                    layer.close(index);
+                                });
+                                socket.send(JSON.stringify({
+                                    cmd: 'abc.def', data: {
+                                        'uid': userInfo.id
+                                    }
+                                }));
+                            }
+                        });
+                    }
+                });
+            },
+            addqun: function () {
+                layim.add({
+                    type: 'group'
+                    , username: 'LayIM会员群'
+                    , avatar: '//tva2.sinaimg.cn/crop.0.0.180.180.50/6ddfa27bjw1e8qgp5bmzyj2050050aa8.jpg'
+                    , submit: function (group, remark, index) {
+                        layer.msg('申请已发送，请等待管理员确认', {
+                            icon: 1
+                            , shade: 0.5
+                        }, function () {
+                            layer.close(index);
+                        });
+
+                        //通知对方
+                        /*
+                        $.post('/im-applyGroup/', {
+                          uid: info.uid
+                          ,from_group: group
+                          ,remark: remark
+                        }, function(res){
+
+                        });
+                        */
+                    }
+                });
+            },
+            addFriend: function () {
+                var user = {
+                    type: 'friend'
+                    , id: 1234560
+                    , username: '李彦宏' //好友昵称，若申请加群，参数为：groupname
+                    , avatar: '//tva4.sinaimg.cn/crop.0.0.996.996.180/8b2b4e23jw8f14vkwwrmjj20ro0rpjsq.jpg' //头像
+                    , sign: '全球最大的中文搜索引擎'
+                }
+                layim.setFriendGroup({
+                    type: user.type
+                    , username: user.username
+                    , avatar: user.avatar
+                    , group: layim.cache().friend //获取好友列表数据
+                    , submit: function (group, index) {
+                        //一般在此执行Ajax和WS，以通知对方已经同意申请
+                        //……
+
+                        //同意后，将好友追加到主面板
+                        layim.addList({
+                            type: user.type
+                            , username: user.username
+                            , avatar: user.avatar
+                            , groupid: group //所在的分组id
+                            , id: user.id //好友ID
+                            , sign: user.sign //好友签名
+                        });
+
+                        layer.close(index);
+                    }
+                });
+            },
+            addGroup: function () {
+                layer.msg('已成功把[Angular开发]添加到群组里', {
+                    icon: 1
+                });
+                //增加一个群组
+                layim.addList({
+                    type: 'group'
+                    , avatar: "//tva3.sinaimg.cn/crop.64.106.361.361.50/7181dbb3jw8evfbtem8edj20ci0dpq3a.jpg"
+                    , groupname: 'Angular开发'
+                    , id: "12333333"
+                    , members: 0
+                });
+            },
+            removeFriend: function () {
+                layer.msg('已成功删除[凤姐]', {
+                    icon: 1
+                });
+                //删除一个好友
+                layim.removeList({
+                    id: 121286
+                    , type: 'friend'
+                });
+            },
+            removeGroup: function () {
+                layer.msg('已成功删除[前端群]', {
+                    icon: 1
+                });
+                //删除一个群组
+                layim.removeList({
+                    id: 101
+                    , type: 'group'
+                });
+            },
+            //置灰离线好友
+            setGray: function () {
+                layim.setFriendStatus(168168, 'offline');
+
+                layer.msg('已成功将好友[马小云]置灰', {
+                    icon: 1
+                });
+            },
+            //取消好友置灰
+            unGray: function () {
+                layim.setFriendStatus(168168, 'online');
+
+                layer.msg('成功取消好友[马小云]置灰状态', {
+                    icon: 1
+                });
+            },
+            //移动端版本
+            mobile: function () {
+                var device = layui.device();
+                var mobileHome = '/layim/demo/mobile.html';
+                if (device.android || device.ios) {
+                    return location.href = mobileHome;
+                }
+                var index = layer.open({
+                    type: 2
+                    , title: '移动版演示 （或手机扫右侧二维码预览）'
+                    , content: mobileHome
+                    , area: ['375px', '667px']
+                    , shadeClose: true
+                    , shade: 0.8
+                    , end: function () {
+                        layer.close(index + 2);
+                    }
+                });
+                layer.photos({
+                    photos: {
+                        "data": [{
+                            "src": "http://cdn.layui.com/upload/2016_12/168_1481056358469_50288.png",
+                        }]
+                    }
+                    , anim: 0
+                    , shade: false
+                    , success: function (layero) {
+                        layero.css('margin-left', '350px');
+                    }
+                });
+            }
+        };
+        var form = layui.form,
+            layer = layui.layer
+
+        //监听提交
+        form.on('submit(search)', function (formData) {
+            $.ajax({
+                url: "{:url('api/memberApi/getMemberInfo')}",
+                data: JSON.stringify(formData.field),
+                type: "Post",
+                dataType: "json",
+                success: function (data) {
+                    if (data.code === 100000) {
+                        active['add'].call(data.data);
+                        return false;
+                    } else {
+                        layer.msg(data.message);
+                        return false;
+                    }
+                },
+                error: function (data) {
+                    layer.msg('错误', '返回格式错误');
+                    return false;
+                }
+            });
+        });
+    });
+</script>
+
+</body>
+</html>

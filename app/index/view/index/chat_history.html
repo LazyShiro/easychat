@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>聊天记录</title>
+
+    <link rel="stylesheet" href="/static/layim/css/layui.css" media="all">
+    <style>
+        body .layim-chat-main {
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+<div id="chat_page" style="margin: 0 10px;"></div>
+<div class="layim-chat-main">
+    <ul id="chat_history"></ul>
+</div>
+<textarea title="消息模版" id="chat_history_tpl" style="display:none;">
+{{# layui.each(d.data, function(index, item){
+  if(item.uid == parent.layui.layim.cache().mine.id){ }}
+    <li class="layim-chat-mine" data-id="{{ item.recordId }}" data-uid="{{ item.uid }}">
+        <div class="layim-chat-user">
+            <img src="{{ item.avatar }}">
+            <cite><i>{{ layui.data.date(item.timestamp) }}</i>{{ item.username }}</cite>
+        </div>
+        <div class="layim-chat-text">{{ layui.layim.content(item.content) }}</div>
+    </li>
+  {{# } else { }}
+    <li data-id="{{ item.recordId }}" data-uid="{{ item.uid }}">
+        <div class="layim-chat-user">
+            <img src="{{ item.avatar }}">
+            <cite>{{ item.username }}<i>{{ layui.data.date(item.timestamp) }}</i></cite>
+        </div>
+        <div class="layim-chat-text">{{ layui.layim.content(item.content) }}</div>
+    </li>
+  {{# }
+}); }}
+</textarea>
+<script src="/static/layim/layui.js" charset="utf-8"></script>
+<script src="/static/js/jquery-1.11.0.min.js" charset="utf-8"></script>
+<script>
+    $(function () {
+        loadChatHistory();
+    });
+
+    function loadChatHistory() {
+        layui.use(['jquery', 'table', 'layer', 'laypage', 'form', 'layim'],
+            function () {
+                $ = layui.jquery;
+
+                let layTpl = layui.laytpl,
+                    layim = layui.layim,
+                    layPage = layui.laypage;
+
+                function getChatHistory(page, limit = 10, keyword = '') {
+                    let param = {
+                        friendId: getQueryVariable('id'),
+                        page: page,
+                        limit: limit,
+                        keyword: keyword,
+                    };
+                    $.ajax({
+                        url: "{:url('api/chatApi/getChatHistory')}",
+                        data: JSON.stringify(param),
+                        type: "Post",
+                        dataType: "json",
+                        success: function (data) {
+                            if (data.status === 1) {
+                                let totalNum = data.data.totalCount;
+                                let html = layTpl(chat_history_tpl.value).render({
+                                    data: data.data.list
+                                });
+                                $('#chat_history').html(html);
+
+                                layPage.render({
+                                    elem: 'chat_page',
+                                    count: totalNum,
+                                    curr: page,
+                                    limit: limit,
+                                    keyword: keyword,
+                                    layout: ['count', 'prev', 'page', 'next', 'limit', 'refresh', 'skip', 'find'],
+                                    jump: function (obj, first) {
+                                        if (!first) {
+                                            getChatHistory(obj.curr, obj.limit, getSearchString());
+                                        }
+                                    }
+                                });
+                            } else {
+                                top.layer.msg(data.message);
+                            }
+                        },
+                        error: function (data) {
+                            layer.msg('错误', '返回格式错误');
+                            return false;
+                        }
+                    });
+                }
+
+                function getQueryVariable(variable) {
+                    let query = window.location.search.substring(1);
+                    let vars = query.split("&");
+                    for (let i = 0; i < vars.length; i++) {
+                        let pair = vars[i].split("=");
+                        if (pair[0] === variable) {
+                            return pair[1];
+                        }
+                    }
+                    return false;
+                }
+
+                function getSearchString(){
+                    return $('.layui-laypage-find .layui-input').val();
+                }
+
+                // 初始化第一页数据
+                getChatHistory(1);
+            });
+    }
+</script>
+</body>
+</html>

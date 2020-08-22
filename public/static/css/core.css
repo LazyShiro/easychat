@@ -1,0 +1,188 @@
+@font-face {
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Raleway'), url('http://resource.an0nymou5.com/chat/font/useless.ttf') format('truetype');
+}
+.bg-mask {
+  background: rgba(255, 255, 255, 0.2);
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  position: fixed;
+}
+
+.wrap {
+  display: block;
+  overflow: hidden;
+  z-index: 10000;
+  margin-bottom: 20px;
+  visibility: hidden;
+}
+
+.content {
+  display: block;
+  overflow: hidden;
+  color: #fff;
+  text-shadow: #323232 0px 1px 0px;
+}
+.content h2 {
+  margin: 30px 0;
+}
+
+.line {
+  display: block;
+  overflow: hidden;
+  height: 80px;
+  position: relative;
+  margin-top: 15px;
+}
+.line .pb {
+  height: 8px;
+  position: absolute;
+  top: 36px;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.4);
+  -webkit-box-shadow: rgba(50, 50, 50, 0.6) 0 0 1px;
+  -moz-box-shadow: rgba(50, 50, 50, 0.6) 0 0 1px;
+  box-shadow: rgba(50, 50, 50, 0.6) 0 0 1px;
+}
+.line .pb .pb-item {
+  display: block;
+  overflow: hidden;
+  height: 8px;
+  width: 25%;
+  background: rgba(255, 255, 255, 0.98);
+  -moz-border-radius-topright: 2px;
+  -webkit-border-top-right-radius: 2px;
+  border-top-right-radius: 2px;
+  -moz-border-radius-bottomright: 2px;
+  -webkit-border-bottom-right-radius: 2px;
+  border-bottom-right-radius: 2px;
+}
+.line .boxes {
+  display: block;
+  overflow: hidden;
+  position: absolute;
+  top: 10px;
+  left: 0;
+  right: 0;
+  height: 60px;
+  z-index: 101;
+}
+.line .boxes .box {
+  display: block;
+  overflow: hidden;
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  line-height: 64px;
+  background: #ddd;
+  text-align: center;
+  border: 3px solid #fff;
+  color: #2980b9;
+  -webkit-border-radius: 30px;
+  -moz-border-radius: 30px;
+  -ms-border-radius: 30px;
+  -o-border-radius: 30px;
+  border-radius: 30px;
+  -webkit-box-shadow: rgba(50, 50, 50, 0.3) 0 0 1px;
+  -moz-box-shadow: rgba(50, 50, 50, 0.3) 0 0 1px;
+  box-shadow: rgba(50, 50, 50, 0.3) 0 0 1px;
+  text-shadow: white 0 1px 0;
+  margin-left: -30px;
+  cursor: pointer;
+}
+.line .boxes .active-box {
+  background: #2980b9;
+  color: #fff;
+  text-shadow: #323232 0 1px 0;
+}
+
+.descs {
+  background: #2980b9;
+  color: #fff;
+  border-top: 1px solid #ebebeb;
+  padding: 20px;
+  -webkit-border-radius: 0 0 10px 10px;
+  -moz-border-radius: 0 0 10px 10px;
+  -ms-border-radius: 0 0 10px 10px;
+  -o-border-radius: 0 0 10px 10px;
+  border-radius: 0 0 10px 10px;
+}
+.descs .desc {
+  display: none;
+}
+.descs .desc .icon {
+  text-align: center;
+  color: #fff;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  text-shadow: #323232 0 1px 0;
+}
+.descs .desc .text h3 {
+  margin-top: 0px;
+  text-shadow: #323232 0 1px 0;
+}
+
+.input-group-addon {
+  border-color: #fff;
+  background: #fff;
+  -webkit-border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  -ms-border-radius: 0 !important;
+  -o-border-radius: 0 !important;
+  border-radius: 0 !important;
+  color: #2980b9;
+}
+
+.semail {
+  box-shadow: none !important;
+  outline: none;
+  border-color: #fff;
+  border-left-color: #ebebeb;
+}
+
+.semail:hover, .semail:focus {
+  box-shadow: none !important;
+  outline: none;
+  border-color: #fff;
+  border-left-color: #ebebeb;
+}
+
+.semail:disabled {
+  border-color: #ebebeb;
+  background: #ebebeb;
+}
+
+.sbtn {
+  border-color: #fff;
+  border-left-color: #ebebeb;
+  background: #fff;
+  -webkit-border-radius: 0 !important;
+  -moz-border-radius: 0 !important;
+  -ms-border-radius: 0 !important;
+  -o-border-radius: 0 !important;
+  border-radius: 0 !important;
+  outline: none;
+}
+
+.sbtn:hover, .sbtn:focus {
+  border-color: #ebebeb;
+  border-left-color: #ebebeb !important;
+  box-shadow: none !important;
+  outline: none;
+  background: #ebebeb;
+}
+
+.falert {
+  display: none;
+}
+
+* {
+  font-family: 'Raleway', sans-serif;
+}
