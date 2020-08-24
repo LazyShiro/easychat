@@ -9,7 +9,10 @@
     <link id="layuicss-skinlayim-mobilecss" rel="stylesheet" href="http://resource.an0nymou5.com/layim/css/modules/layim/mobile/layim.css" media="all">
 </head>
 <body>
+<script src="http://resource.an0nymou5.com/common/js/jquery-3.5.1.min.js"></script>
 <script src="http://resource.an0nymou5.com/layim/layui.mobile.js"></script>
+<script src="/static/common/websocket.js"></script>
+<script src="/static/common/common.js"></script>
 <script>
     layui.config({
         version: '20200603'
@@ -40,130 +43,117 @@
             '(*^__^*) face[嘻嘻] ，是贤心吗？'
         ];
 
-        layim.config({
-            //上传图片接口
-            uploadImage: {
-                url: '/upload/image', //（返回的数据格式见下文）
-                type: '' //默认post
-            },
+        ws.init({
+            url: "ws.an0nymou5.com/ws/im",
+            token: window.encodeURIComponent(common.getCookie('token'))
+        }).connect();
+        ws.onmessage = function (message) {
+            let response = JSON.parse(message.data),
+                cmd = response.cmd,
+                data = response.data,
+                contentData = data.data,
+                ext = response.ext;
 
-            //上传文件接口
-            uploadFile: {
-                url: '/upload/file', //（返回的数据格式见下文）
-                type: '' //默认post
-            },
-            init: {
-                //我的信息
-                mine: {
-                    "username": "纸飞机", //我的昵称
-                    "id": 123, //我的ID
-                    "avatar": "//cdn.layui.com/upload/2017_2/168_1487445347637_70429.jpg", //我的头像
-                    "sign": "懒得签名"
-                },
-                //我的好友列表
-                friend: [{
-                    "groupname": "名人",
-                    "id": 0,
-                    "list": [{
-                        "username": "贤心",
-                        "id": "100001",
-                        "avatar": "//tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg",
-                        "sign": "这些都是测试数据，实际使用请严格按照该格式返回",
-                        "status": "online"
-                    }, {
-                        "username": "刘涛tamia",
-                        "id": "100001222",
-                        "sign": "如约而至，不负姊妹欢乐颂",
-                        "avatar": "//tva4.sinaimg.cn/crop.0.1.1125.1125.180/475bb144jw8f9nwebnuhkj20v90vbwh9.jpg"
-                    }, {
-                        "username": "谢楠",
-                        "id": "10034001",
-                        "avatar": "//tva2.sinaimg.cn/crop.1.0.747.747.180/633f068fjw8f9h040n951j20ku0kr74t.jpg",
-                        "sign": ""
-                    }, {
-                        "username": "马小云",
-                        "id": "168168",
-                        "avatar": "//tva1.sinaimg.cn/crop.0.0.180.180.180/7fde8b93jw1e8qgp5bmzyj2050050aa8.jpg",
-                        "sign": "让天下没有难写的代码"
-                    }, {
-                        "username": "徐小峥",
-                        "id": "666666",
-                        "avatar": "//tva1.sinaimg.cn/crop.0.0.512.512.180/6a4acad5jw8eqi6yaholjj20e80e8t9f.jpg",
-                        "sign": "代码在囧途，也要写到底"
-                    }]
-                }, {
-                    "groupname": "网红",
-                    "id": 1,
-                    "list": [{
-                        "username": "罗玉凤",
-                        "id": "121286",
-                        "avatar": "//tva4.sinaimg.cn/crop.0.0.640.640.180/4a02849cjw8fc8vn18vktj20hs0hs75v.jpg",
-                        "sign": "在自己实力不济的时候，不要去相信什么媒体和记者。他们不是善良的人，有时候候他们的采访对当事人而言就是陷阱"
-                    }, {
-                        "username": "Z_子晴",
-                        "id": "108101",
-                        "avatar": "//tva1.sinaimg.cn/crop.0.23.1242.1242.180/8693225ajw8fbimjimpjwj20yi0zs77l.jpg",
-                        "sign": "微电商达人"
-                    }, {
-                        "username": "大鱼_MsYuyu",
-                        "id": "12123454",
-                        "avatar": "//tva2.sinaimg.cn/crop.0.0.512.512.180/005LMAegjw8f2bp9qg4mrj30e80e8dg5.jpg",
-                        "sign": "我瘋了！這也太準了吧  超級笑點低"
-                    }, {
-                        "username": "Lemon_CC",
-                        "id": "102101",
-                        "avatar": "//tva4.sinaimg.cn/crop.0.0.180.180.180/6d424ea5jw1e8qgp5bmzyj2050050aa8.jpg",
-                        "sign": ""
-                    }, {
-                        "username": "柏小雪",
-                        "id": "3435343",
-                        "avatar": "//tva2.sinaimg.cn/crop.0.8.751.751.180/961a9be5jw8fczq7q98i7j20kv0lcwfn.jpg",
-                        "sign": ""
-                    }]
-                }, {
-                    "groupname": "女神",
-                    "id": 2,
-                    "list": [{
-                        "username": "林心如",
-                        "id": "76543",
-                        "avatar": "//tva3.sinaimg.cn/crop.0.0.512.512.180/48f122e6jw8fcmi072lkyj20e80e8t9i.jpg",
-                        "sign": "我爱贤心"
-                    }, {
-                        "username": "佟丽娅",
-                        "id": "4803920",
-                        "avatar": "//tva3.sinaimg.cn/crop.0.0.750.750.180/5033b6dbjw8etqysyifpkj20ku0kuwfw.jpg",
-                        "sign": "我也爱贤心吖吖啊"
-                    }]
-                }]
-                ,
-                "group": [{
-                    "groupname": "前端群",
-                    "id": "101",
-                    "avatar": "http://tp2.sinaimg.cn/2211874245/180/40050524279/0"
-                }, {
-                    "groupname": "Fly社区官方群",
-                    "id": "102",
-                    "avatar": "http://tp2.sinaimg.cn/5488749285/50/5719808192/1"
-                }]
-            },
+            if (cmd === 'member.editSignature') {
+                if (data.status === 1) {
+                    msg = '修改签名成功';
+                    icon = 1;
+                } else {
+                    msg = data.message;
+                    icon = 2;
+                }
+                layer.msg(msg, {
+                    icon: icon,
+                    time: 2000
+                });
+            } else if (cmd === 'friend.addFriend') {
+                if (data.status === 1) {
+                    msg = '好友申请已发送，请等待对方确认';
+                    icon = 1;
+                } else {
+                    msg = data.message;
+                    icon = 2;
+                }
+                layer.msg(msg, {
+                    icon: icon,
+                    time: 2000
+                });
+            } else if (cmd === 'receipt.friendApply') {
+                layim.msgbox(data.count); //模拟消息盒子有新消息，实际使用时，一般是动态获得
+            } else if (cmd === 'receipt.friendAccept') {
+                layim.addList(contentData);
+                layer.open({
+                    type: 0,
+                    content: contentData.username + '已同意你的好友请求'
+                });
+            } else if (cmd === 'receipt.friendFettle') {
+                layim.setFriendStatus(contentData.id, contentData.status);
+                layim.setChatStatus('<span style="color:#FF5722;">' + contentData.status + '</span>');
+            } else if (cmd === 'receipt.chatReceive') {
+                layim.getMessage(contentData);
+            }
+        };
+        ws.onopen = function () {
+            let data = {'cmd': 'common.connect'};
+            this.send(JSON.stringify(data));
+        };
+        ws.onclose = function () {
+            alert('你已经长时间未进行任何操作，请重新登陆');
+            layui.data('layim', null)
+            document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+            window.location.href = "{:url('index/login/index')}";
+        }
 
-            //扩展更多列表
-            moreList: [{
-                alias: 'find',
-                title: '发现',
-                iconUnicode: '&#xe628;', //图标字体的unicode，可不填
-                iconClass: '' //图标字体的class类名
-            }, {
-                alias: 'share',
-                title: '分享与邀请',
-                iconUnicode: '&#xe641;', //图标字体的unicode，可不填
-                iconClass: '' //图标字体的class类名
-            }],
+        $.ajax({
+            url: "{:url('api/chatApi/getMainData')}",
+            dataType: "json",
+            success: function (data) {
+                if (data.code === 100000) {
+                    layim.config({
+                        //上传图片接口
+                        uploadImage: {
+                            url: '/upload/image', //（返回的数据格式见下文）
+                            type: '' //默认post
+                        },
 
-            //,isNewFriend: false //是否开启“新的朋友”
-            isgroup: true //是否开启“群聊”
-            //,chatTitleColor: '#c00' //顶部Bar颜色
-            //,title: 'LayIM' //应用名，默认：我的IM
+                        //上传文件接口
+                        uploadFile: {
+                            url: '/upload/file', //（返回的数据格式见下文）
+                            type: '' //默认post
+                        },
+                        init: data.data,
+
+                        //扩展更多列表
+                        moreList: [
+                            // {
+                            //     alias: 'find',
+                            //     title: '发现',
+                            //     iconUnicode: '&#xe628;', //图标字体的unicode，可不填
+                            //     iconClass: '' //图标字体的class类名
+                            // },
+                            // {
+                            //     alias: 'share',
+                            //     title: '分享与邀请',
+                            //     iconUnicode: '&#xe641;', //图标字体的unicode，可不填
+                            //     iconClass: '' //图标字体的class类名
+                            // }
+                        ],
+
+                        //,isNewFriend: false //是否开启“新的朋友”
+                        isgroup: true //是否开启“群聊”
+                        //,chatTitleColor: '#c00' //顶部Bar颜色
+                        //,title: 'LayIM' //应用名，默认：我的IM
+                    });
+                    return false;
+                } else {
+                    layer.msg(data.message);
+                    return false;
+                }
+            },
+            error: function (data) {
+                layer.msg('错误', '返回格式错误');
+                return false;
+            }
         });
 
         //创建一个会话
@@ -175,6 +165,62 @@
           ,avatar: '//tp1.sinaimg.cn/1571889140/180/40030060651/1'
         });
         */
+
+        layim.on('ready', function (res) {
+            $.ajax({
+                url: "{:url('api/chatApi/getAllNoReadChatHistory')}",
+                contentType: "application/json;charset=utf-8",
+                data: {'time': parseInt(Math.random() * 1000)},
+                dataType: "json",
+                success: function (data) {
+                    console.log(data.data)
+                    if (data.code === 100000) {
+                        let my_layim_mobile = layui.data('layim-mobile')[{$uid}];
+                        if (my_layim_mobile === undefined) {
+                            $.each(data.data, function (key, value) {
+                                layim.getMessage(value);
+                            })
+                        } else {
+                            $.each(data.data, function (key, value) {
+                                let historyData = layui.data('layim-mobile')[{$uid}]['chatlog']['friend' + value.fromid];
+                                if (historyData === undefined) {
+                                    layim.getMessage(value);
+                                } else {
+                                    let insertSwitch = true;
+                                    $.each(historyData, function (k, v) {
+                                        if (v.cid === value.cid) {
+                                            insertSwitch = false;
+                                            return false;
+                                        }
+                                    })
+                                    if (insertSwitch) {
+                                        layim.getMessage(value);
+                                    }
+                                }
+                            })
+                        }
+                        return false;
+                    } else {
+                        layer.msg(data.message);
+                        return false;
+                    }
+                    // avatar: "/static/png/chat_ex_y.png"
+                    // cid: 167
+                    // content: "1"
+                    // fromid: 34
+                    // id: 34
+                    // mine: false
+                    // timestamp: 1598252716000
+                    // type: "friend"
+                    // username: "1"
+                },
+                error: function (data) {
+                    layer.msg('错误', '返回格式错误');
+                    return false;
+                }
+            })
+            layui.data('layim-mobile', {key: 'mine', value: res.mine})
+        });
 
         //监听点击“新的朋友”
         layim.on('newFriend', function () {
@@ -223,43 +269,51 @@
 
         //监听发送消息
         layim.on('sendMessage', function (data) {
-            let To = data.to;
-            //console.log(data);
-
-            //演示自动回复
-            setTimeout(function () {
-                let obj = {};
-                if (To.type === 'group') {
-                    obj = {
-                        username: '模拟群员' + (Math.random() * 100 | 0),
-                        avatar: layui.cache.dir + 'images/face/' + (Math.random() * 72 | 0) + '.gif',
-                        id: To.id,
-                        type: To.type,
-                        content: autoReplay[Math.random() * 9 | 0]
-                    }
-                } else {
-                    obj = {
-                        username: To.name,
-                        avatar: To.avatar,
-                        id: To.id,
-                        type: To.type,
-                        content: autoReplay[Math.random() * 9 | 0]
-                    }
+            let sendData = {
+                'cmd': 'chat.sendMessage',
+                'data': {
+                    'friendId': data.to.id,
+                    'content': data.mine.content
                 }
-                layim.getMessage(obj);
-            }, 1000);
+            };
+            ws.send(JSON.stringify(sendData));
+            // let To = data.to;
+            // //console.log(data);
+            //
+            // //演示自动回复
+            // setTimeout(function () {
+            //     let obj = {};
+            //     if (To.type === 'group') {
+            //         obj = {
+            //             username: '模拟群员' + (Math.random() * 100 | 0),
+            //             avatar: layui.cache.dir + 'images/face/' + (Math.random() * 72 | 0) + '.gif',
+            //             id: To.id,
+            //             type: To.type,
+            //             content: autoReplay[Math.random() * 9 | 0]
+            //         }
+            //     } else {
+            //         obj = {
+            //             username: To.name,
+            //             avatar: To.avatar,
+            //             id: To.id,
+            //             type: To.type,
+            //             content: autoReplay[Math.random() * 9 | 0]
+            //         }
+            //     }
+            //     layim.getMessage(obj);
+            // }, 1000);
         });
 
         //模拟收到一条好友消息
         setTimeout(function () {
-            layim.getMessage({
-                username: "贤心",
-                avatar: "//tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg",
-                id: "100001",
-                type: "friend",
-                cid: Math.random() * 100000 | 0, //模拟消息id，会赋值在li的data-cid上，以便完成一些消息的操作（如撤回），可不填
-                content: "嗨，欢迎体验LayIM。演示标记：" + new Date().getTime()
-            });
+            // layim.getMessage({
+            //     username: "贤心",
+            //     avatar: "//tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg",
+            //     id: "100001",
+            //     type: "friend",
+            //     cid: Math.random() * 100000 | 0, //模拟消息id，会赋值在li的data-cid上，以便完成一些消息的操作（如撤回），可不填
+            //     content: "嗨，欢迎体验LayIM。演示标记：" + new Date().getTime()
+            // });
         }, 2000);
 
         //监听查看更多记录
@@ -274,9 +328,16 @@
             });
         });
 
+        layim.on('chat', function (data, a, b, c) {
+            console.log(data)
+            console.log(a)
+            console.log(b)
+            console.log(c)
+        });
+
         //模拟"更多"有新动态
-        layim.showNew('More', true);
-        layim.showNew('find', true);
+        // layim.showNew('More', true);
+        // layim.showNew('find', true);
     });
 </script>
 </body>

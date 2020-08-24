@@ -1,8 +1,6 @@
 <?php
 
-
 namespace app\index\controller;
-
 
 use app\BaseController;
 use app\data\service\MemberService;
@@ -11,7 +9,6 @@ use think\facade\View;
 
 class Mobile extends BaseController
 {
-
 	public function __construct(App $app)
 	{
 		parent::__construct($app);
@@ -21,6 +18,9 @@ class Mobile extends BaseController
 
 	public function index()
 	{
+		View::assign(['uid' => getUid()]);
+
 		return View::fetch();
 	}
+
 }

@@ -197,7 +197,6 @@
         });
         //监听发送消息
         layim.on('sendMessage', function (data) {
-            console.log(data)
             let sendData = {
                 'cmd': 'chat.sendMessage',
                 'data': {

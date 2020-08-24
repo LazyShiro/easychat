@@ -1,3 +1,19 @@
+/*
+ Navicat Premium Data Transfer
+
+ Source Server         : 测试ECS
+ Source Server Type    : MySQL
+ Source Server Version : 80017
+ Source Host           : localhost:3306
+ Source Schema         : easychat
+
+ Target Server Type    : MySQL
+ Target Server Version : 80017
+ File Encoding         : 65001
+
+ Date: 22/08/2020 23:15:21
+*/
+
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
@@ -108,6 +124,7 @@ CREATE TABLE `chat_record`  (
   `uid` int(11) NOT NULL DEFAULT 0 COMMENT '发送者id',
   `content` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '内容',
   `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '状态 0撤回 1正常 2删除',
+  `read` tinyint(1) NOT NULL DEFAULT 0 COMMENT '查看状态 0未读 1已读',
   `createtime` int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
   `updatetime` int(11) NOT NULL DEFAULT 0 COMMENT '更新时间',
   `deletetime` int(11) NOT NULL DEFAULT 0 COMMENT '删除时间',
@@ -150,6 +167,6 @@ CREATE TABLE `chat_room_log`  (
   `createtime` int(11) NOT NULL DEFAULT 0 COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `roomid`(`roomid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '房间日志表' ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 0 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '房间日志表' ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

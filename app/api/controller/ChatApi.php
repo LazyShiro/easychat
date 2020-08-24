@@ -22,7 +22,7 @@ class ChatApi extends BaseController
 		parent::__construct($app);
 		(new MemberService)->authentication();
 		$this->request = json_decode(Request()->getInput(), TRUE);
-		if (Request()->action() !== 'getMainData') {
+		if (!in_array(Request()->action(), ['getMainData', 'getAllNoReadChatHistory'])) {
 			validateV2(!empty($this->request), 900006);
 		}
 	}
@@ -67,6 +67,30 @@ class ChatApi extends BaseController
 		$totalCount = $recordService->getCountByRoomId($uid, $friendId, $keyword);
 
 		returnData(['list' => $list, 'totalCount' => $totalCount]);
+	}
+
+	/**
+	 * 获取所有未读消息
+	 */
+	public function getAllNoReadChatHistory()
+	{
+		$recordService = new RecordService;
+		$list          = $recordService->getAllNoReadChatHistory();
+		returnData($list);
+	}
+
+	/**
+	 * 将好友消息置为已读
+	 */
+	public function readRecord()
+	{
+		$friendId = de($this->request['friendId']);
+
+		validateV2(is_numeric($friendId), 100002);
+
+		$recordService = new RecordService;
+		$recordService->readHisRecord($friendId);
+		returnData();
 	}
 
 }
