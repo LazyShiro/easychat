@@ -91,7 +91,7 @@
                 layim.setChatStatus('<span style="color:#FF5722;">' + contentData.status + '</span>');
             } else if (cmd === 'receipt.chatReceive') {
                 layim.getMessage(contentData);
-            } else if (cmd === 'chat.typingMessage') {
+            } else if (cmd === 'receipt.typingMessage') {
                 let typingMessageStatus = $("#typingMessage").html();
                 if (typingMessageStatus === undefined) {
                     $('#layui-m-layer1 .layim-title p').append("<span id='typingMessage'>正在输入中...</span>");
@@ -339,13 +339,14 @@
     });
 
     function typing(value) {
+        let friendId = $("#layui-m-layer0 .layim-list-history li").eq(0).data('uid');
         let timestamp = (new Date()).valueOf();
         let sendSwitch = timestamp % 4 === 0;
         if (sendSwitch) {
             let sendData = {
                 'cmd': 'chat.typingMessage',
                 'data': {
-                    'friendId': layui.data('layim-mobile')['mine'].id,
+                    'friendId': friendId,
                     'content': value
                 }
             };

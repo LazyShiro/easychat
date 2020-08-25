@@ -86,7 +86,7 @@
                     time: 2000
                 });
             } else if (cmd === 'receipt.friendApply') {
-                layim.msgbox(data.count); //模拟消息盒子有新消息，实际使用时，一般是动态获得
+                layim.msgbox(contentData.count); //模拟消息盒子有新消息，实际使用时，一般是动态获得
             } else if (cmd === 'receipt.friendAccept') {
                 layim.addList(contentData);
                 layer.open({
@@ -270,7 +270,21 @@
                     , content: "临时：" + new Date().getTime()
                 });
             }
-            ,
+            , add: function () {
+                let friendInfo = this;
+                layim.add({
+                    type: 'friend',
+                    username: this.username,
+                    avatar: this.avatar,
+                    submit: function (group, remark, index) {
+                        let data = {
+                            'cmd': 'friend.addFriend',
+                            'data': {'friendId': friendInfo.id, 'groupId': group, 'remark': remark}
+                        };
+                        ws.send(JSON.stringify(data));
+                    }
+                });
+            },
             addqun: function () {
                 layim.add({
                     type: 'group'

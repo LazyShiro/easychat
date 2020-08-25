@@ -295,7 +295,7 @@
                 layer.confirm('确定拒绝吗？', function (index) {
                     $.ajax({
                         url: "{:url('api/friendApi/refuseFriend')}",
-                        data: {'friendId': user.id},
+                        data: JSON.stringify({'friendId': user.id}),
                         type: "Post",
                         dataType: "json",
                         success: function (data) {
