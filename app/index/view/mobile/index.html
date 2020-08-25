@@ -10,7 +10,7 @@
 </head>
 <body>
 <script src="http://resource.an0nymou5.com/common/js/jquery-3.5.1.min.js"></script>
-<script src="http://resource.an0nymou5.com/layim/layui.mobile.js"></script>
+<script src="/static/layim/layui.mobile.js"></script>
 <script src="/static/common/websocket.js"></script>
 <script src="/static/common/common.js"></script>
 <script>
@@ -91,6 +91,14 @@
                 layim.setChatStatus('<span style="color:#FF5722;">' + contentData.status + '</span>');
             } else if (cmd === 'receipt.chatReceive') {
                 layim.getMessage(contentData);
+            } else if (cmd === 'chat.typingMessage') {
+                let typingMessageStatus = $("#typingMessage").html();
+                if (typingMessageStatus === undefined) {
+                    $('#layui-m-layer1 .layim-title p').append("<span id='typingMessage'>正在输入中...</span>");
+                    setTimeout(function () {
+                        $("#typingMessage").remove();
+                    }, 1000)
+                }
             }
         };
         ws.onopen = function () {
@@ -155,16 +163,6 @@
                 return false;
             }
         });
-
-        //创建一个会话
-        /*
-        layim.chat({
-          id: 111111
-          ,name: '许闲心'
-          ,type: 'kefu' //friend、group等字符，如果是group，则创建的是群聊
-          ,avatar: '//tp1.sinaimg.cn/1571889140/180/40030060651/1'
-        });
-        */
 
         layim.on('ready', function (res) {
             $.ajax({
@@ -339,6 +337,25 @@
         // layim.showNew('More', true);
         // layim.showNew('find', true);
     });
+
+    function typing(value) {
+        let timestamp = (new Date()).valueOf();
+        let sendSwitch = timestamp % 4 === 0;
+        if (sendSwitch) {
+            let sendData = {
+                'cmd': 'chat.typingMessage',
+                'data': {
+                    'friendId': layui.data('layim-mobile')['mine'].id,
+                    'content': value
+                }
+            };
+            ws.send(JSON.stringify(sendData));
+        }
+    }
+
+    function removeTypingMessage() {
+        $("#typingMessage").remove();
+    }
 </script>
 </body>
 </html>
