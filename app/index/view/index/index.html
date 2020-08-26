@@ -51,7 +51,7 @@
         ];
 
         ws.init({
-            url: "ws.an0nymou5.com/ws/im",
+            url: "{:config('app.websocket_url')}",
             token: window.encodeURIComponent(common.getCookie('token'))
         }).connect();
         ws.onmessage = function (message) {
