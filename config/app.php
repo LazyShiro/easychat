@@ -22,6 +22,6 @@ return [// 应用地址
 	'error_message'    => '页面错误！请稍后再试～', // 显示错误信息
 	'show_error_msg'   => FALSE,
 	'auto_multi_app'   => TRUE,
-	'global_auth_key'  => 'easy!chat!',
+	'global_auth_key'  => env('app.global_auth_key'),
 	'websocket_url'    => env('app.websocket_url'),
 ];
