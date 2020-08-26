@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>消息盒子</title>
 
-    <link rel="stylesheet" href="/static/layim/css/layui.css">
+    <link rel="stylesheet" href="http://resource.an0nymou5.com/layim/css/layui.css" media="all">
     <style>
         .layim-msgbox {
             margin: 15px;
@@ -108,7 +108,7 @@
 -->
 
 
-<script src="/static/layim/layui.js"></script>
+<script src="http://resource.an0nymou5.com/layim/layui.js" charset="utf-8"></script>
 <script src="/static/common/websocket.js"></script>
 <script src="/static/common/common.js"></script>
 <script>
@@ -157,13 +157,13 @@
                     time: 2000
                 });
             } else if (cmd === 'friend.acceptFriend') {
-                if(data.status === 1){
+                if (data.status === 1) {
                     console.log(contentData);
                     parent.layui.layim.addList(contentData);
-                    $("#"+contentData.friendLogId).find('.layim-msgbox-btn').html('已同意');
+                    $("#" + contentData.friendLogId).find('.layim-msgbox-btn').html('已同意');
                     msg = '你们已成为好友';
                     icon = 1;
-                }else{
+                } else {
                     msg = data.message;
                     icon = 2;
                 }
