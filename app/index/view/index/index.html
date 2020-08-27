@@ -98,6 +98,8 @@
                 layim.setChatStatus('<span style="color:#FF5722;">' + contentData.status + '</span>');
             } else if (cmd === 'receipt.chatReceive') {
                 layim.getMessage(contentData);
+            } else if (cmd === 'receipt.friendAvatar') {
+                $('.layim-friend' + contentData.id + ' img').attr('src', contentData.avatar);
             }
         };
         ws.onopen = function () {
