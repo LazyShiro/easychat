@@ -1,6 +1,7 @@
 <?php
 
 use app\data\dao\MemberDao;
+use app\data\dao\FileDao;
 use app\data\service\MemberService;
 
 // 应用公共文件
@@ -208,7 +209,13 @@ function returnData($resource = [], $code = 100000)
  */
 function getAvatar(int $id)
 {
-	return '/static/png/chat_ex_y.png';
+	if ($id === 0) {
+		return '/static/png/chat_ex_y.png';
+	}
+	$fileModel = new FileDao;
+	$fileInfo  = $fileModel->getInfo($id, 'key');
+
+	return env('app.resource_url') . $fileInfo['key'];
 }
 
 /**
@@ -221,7 +228,15 @@ function getAvatar(int $id)
 function dateFormat(int $time)
 {
 	$t = time() - $time;
-	$f = ['31536000' => '年', '2592000' => '个月', '604800' => '星期', '86400' => '天', '3600' => '小时', '60' => '分钟', '1' => '秒',];
+	$f = [
+		'31536000' => '年',
+		'2592000'  => '个月',
+		'604800'   => '星期',
+		'86400'    => '天',
+		'3600'     => '小时',
+		'60'       => '分钟',
+		'1'        => '秒',
+	];
 	foreach ($f as $k => $v) {
 		if (0 != $c = floor($t / (int) $k)) {
 			return $c . $v . '前';
@@ -247,8 +262,108 @@ function removeXSS($val)
 		$val = preg_replace('/(&#[xX]0{0,8}' . dechex(ord($search[$i])) . ';?)/i', $search[$i], $val); // with a ;
 		$val = preg_replace('/(�{0,8}' . ord($search[$i]) . ';?)/', $search[$i], $val);                // with a ;
 	}
-	$ra1 = ['javascript', 'vbscript', 'expression', 'applet', 'meta', 'xml', 'blink', 'link', 'style', 'script', 'embed', 'object', 'iframe', 'frame', 'frameset', 'ilayer', 'layer', 'bgsound', 'title', 'base',];
-	$ra2 = ['onabort', 'onactivate', 'onafterprint', 'onafterupdate', 'onbeforeactivate', 'onbeforecopy', 'onbeforecut', 'onbeforedeactivate', 'onbeforeeditfocus', 'onbeforepaste', 'onbeforeprint', 'onbeforeunload', 'onbeforeupdate', 'onblur', 'onbounce', 'oncellchange', 'onchange', 'onclick', 'oncontextmenu', 'oncontrolselect', 'oncopy', 'oncut', 'ondataavailable', 'ondatasetchanged', 'ondatasetcomplete', 'ondblclick', 'ondeactivate', 'ondrag', 'ondragend', 'ondragenter', 'ondragleave', 'ondragover', 'ondragstart', 'ondrop', 'onerror', 'onerrorupdate', 'onfilterchange', 'onfinish', 'onfocus', 'onfocusin', 'onfocusout', 'onhelp', 'onkeydown', 'onkeypress', 'onkeyup', 'onlayoutcomplete', 'onload', 'onlosecapture', 'onmousedown', 'onmouseenter', 'onmouseleave', 'onmousemove', 'onmouseout', 'onmouseover', 'onmouseup', 'onmousewheel', 'onmove', 'onmoveend', 'onmovestart', 'onpaste', 'onpropertychange', 'onreadystatechange', 'onreset', 'onresize', 'onresizeend', 'onresizestart', 'onrowenter', 'onrowexit', 'onrowsdelete', 'onrowsinserted', 'onscroll', 'onselect', 'onselectionchange', 'onselectstart', 'onstart', 'onstop', 'onsubmit', 'onunload',];
+	$ra1 = [
+		'javascript',
+		'vbscript',
+		'expression',
+		'applet',
+		'meta',
+		'xml',
+		'blink',
+		'link',
+		'style',
+		'script',
+		'embed',
+		'object',
+		'iframe',
+		'frame',
+		'frameset',
+		'ilayer',
+		'layer',
+		'bgsound',
+		'title',
+		'base',
+	];
+	$ra2 = [
+		'onabort',
+		'onactivate',
+		'onafterprint',
+		'onafterupdate',
+		'onbeforeactivate',
+		'onbeforecopy',
+		'onbeforecut',
+		'onbeforedeactivate',
+		'onbeforeeditfocus',
+		'onbeforepaste',
+		'onbeforeprint',
+		'onbeforeunload',
+		'onbeforeupdate',
+		'onblur',
+		'onbounce',
+		'oncellchange',
+		'onchange',
+		'onclick',
+		'oncontextmenu',
+		'oncontrolselect',
+		'oncopy',
+		'oncut',
+		'ondataavailable',
+		'ondatasetchanged',
+		'ondatasetcomplete',
+		'ondblclick',
+		'ondeactivate',
+		'ondrag',
+		'ondragend',
+		'ondragenter',
+		'ondragleave',
+		'ondragover',
+		'ondragstart',
+		'ondrop',
+		'onerror',
+		'onerrorupdate',
+		'onfilterchange',
+		'onfinish',
+		'onfocus',
+		'onfocusin',
+		'onfocusout',
+		'onhelp',
+		'onkeydown',
+		'onkeypress',
+		'onkeyup',
+		'onlayoutcomplete',
+		'onload',
+		'onlosecapture',
+		'onmousedown',
+		'onmouseenter',
+		'onmouseleave',
+		'onmousemove',
+		'onmouseout',
+		'onmouseover',
+		'onmouseup',
+		'onmousewheel',
+		'onmove',
+		'onmoveend',
+		'onmovestart',
+		'onpaste',
+		'onpropertychange',
+		'onreadystatechange',
+		'onreset',
+		'onresize',
+		'onresizeend',
+		'onresizestart',
+		'onrowenter',
+		'onrowexit',
+		'onrowsdelete',
+		'onrowsinserted',
+		'onscroll',
+		'onselect',
+		'onselectionchange',
+		'onselectstart',
+		'onstart',
+		'onstop',
+		'onsubmit',
+		'onunload',
+	];
 	$ra  = array_merge($ra1, $ra2);
 
 	$found = TRUE; // keep replacing as long as the previous round replaced something
@@ -329,41 +444,43 @@ function checkBrowser()
 	if (isMobile() && $controller !== 'Mobile') {
 		exit("<script>window.location.href='" . url('index/mobile/index') . "';</script>");
 	}
-	if(!isMobile() && $controller !== 'Index') {
+	if (!isMobile() && $controller !== 'Index') {
 		exit("<script>window.location.href='" . url('/') . "';</script>");
 	}
 }
 
 /**
  * 是否移动端
+ *
  * @return bool
  */
 function isMobile()
 {
 	// 如果有HTTP_X_WAP_PROFILE则一定是移动设备
 	if (isset($_SERVER['HTTP_X_WAP_PROFILE'])) {
-		return true;
+		return TRUE;
 	}
 	// 如果via信息含有wap则一定是移动设备,部分服务商会屏蔽该信息
 	if (isset($_SERVER['HTTP_VIA'])) {
 		// 找不到为false,否则为true
-		return stristr($_SERVER['HTTP_VIA'], "wap") ? true : false;
+		return stristr($_SERVER['HTTP_VIA'], "wap") ? TRUE : FALSE;
 	}
 	// 脑残法，判断手机发送的客户端标志,兼容性有待提高。其中'MicroMessenger'是电脑微信
 	if (isset($_SERVER['HTTP_USER_AGENT'])) {
-		$clientkeywords = array('nokia', 'sony', 'ericsson', 'mot', 'samsung', 'htc', 'sgh', 'lg', 'sharp', 'sie-', 'philips', 'panasonic', 'alcatel', 'lenovo', 'iphone', 'ipod', 'blackberry', 'meizu', 'android', 'netfront', 'symbian', 'ucweb', 'windowsce', 'palm', 'operamini', 'operamobi', 'openwave', 'nexusone', 'cldc', 'midp', 'wap', 'mobile', 'MicroMessenger');
+		$clientkeywords = ['nokia', 'sony', 'ericsson', 'mot', 'samsung', 'htc', 'sgh', 'lg', 'sharp', 'sie-', 'philips', 'panasonic', 'alcatel', 'lenovo', 'iphone', 'ipod', 'blackberry', 'meizu', 'android', 'netfront', 'symbian', 'ucweb', 'windowsce', 'palm', 'operamini', 'operamobi', 'openwave', 'nexusone', 'cldc', 'midp', 'wap', 'mobile', 'MicroMessenger'];
 		// 从HTTP_USER_AGENT中查找手机浏览器的关键字
 		if (preg_match("/(" . implode('|', $clientkeywords) . ")/i", strtolower($_SERVER['HTTP_USER_AGENT']))) {
-			return true;
+			return TRUE;
 		}
 	}
 	// 协议法，因为有可能不准确，放到最后判断
 	if (isset ($_SERVER['HTTP_ACCEPT'])) {
 		// 如果只支持wml并且不支持html那一定是移动设备
 		// 如果支持wml和html但是wml在html之前则是移动设备
-		if ((strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') !== false) && (strpos($_SERVER['HTTP_ACCEPT'], 'text/html') === false || (strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') < strpos($_SERVER['HTTP_ACCEPT'], 'text/html')))) {
-			return true;
+		if ((strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') !== FALSE) && (strpos($_SERVER['HTTP_ACCEPT'], 'text/html') === FALSE || (strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') < strpos($_SERVER['HTTP_ACCEPT'], 'text/html')))) {
+			return TRUE;
 		}
 	}
-	return false;
+
+	return FALSE;
 }

@@ -12,11 +12,14 @@ class MemberApi extends BaseController
 {
 	protected $request;
 
+	protected $file;
+
 	public function __construct(App $app)
 	{
 		parent::__construct($app);
 		(new MemberService)->authentication();
-		$this->request = json_decode(Request()->getInput(), true);
+		$this->request = json_decode(Request()->getInput(), TRUE);
+		$this->file    = Request()->file();
 	}
 
 	/**
@@ -56,7 +59,16 @@ class MemberApi extends BaseController
 	 */
 	public function editAvatar()
 	{
-		$avatar = $this->request['avatar'];
+		$base64 = urldecode($this->request['img']);
+
+		preg_match('/^(data:\s*image\/(\w+);base64,)/', $base64, $result);
+
+		validateV2(in_array($result[2], ['jpg', 'jpeg', 'png', 'gif']), 900007);
+
+		$base64Content = str_replace($result[1], '', $base64);
+		$type          = $result[2];
+
+		returnData((new MemberService)->uploadAvatar($base64Content, $type));
 	}
 
 	/**

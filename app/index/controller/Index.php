@@ -48,4 +48,9 @@ class Index extends BaseController
 		return view();
 	}
 
+	public function uploadAvatar()
+	{
+		return View::fetch();
+	}
+
 }

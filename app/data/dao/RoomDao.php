@@ -33,6 +33,25 @@ class RoomDao
 	}
 
 	/**
+	 * 获取信息（通过id）
+	 *
+	 * @param int    $id
+	 * @param string $field
+	 *
+	 * @return array
+	 */
+	public function getInfoById(int $id, $field = '*')
+	{
+		$where = ['id' => $id];
+		$info  = $this->roomModel->where($where)->field($field)->find();
+		if ($info != NULL) {
+			return $info->toArray();
+		} else {
+			return [];
+		}
+	}
+
+	/**
 	 * 获取列表
 	 *
 	 * @param string $field
@@ -104,9 +123,9 @@ class RoomDao
 	 *
 	 * @return bool
 	 */
-	public function createRoom(string $number, string $name, string $description, int $memberMax)
+	public function createRoom(string $number, string $name = '', string $description = '', int $memberMax = 1)
 	{
-		return $this->roomModel->save(['number' => $number, 'uid' => getUid(), 'name' => $name, 'description' => $description, 'membermax' => $memberMax,]);
+		return $this->roomModel->insertGetId(['number' => $number, 'uid' => getUid(), 'name' => $name, 'description' => $description, 'membermax' => $memberMax,]);
 	}
 
 }

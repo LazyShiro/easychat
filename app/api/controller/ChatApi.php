@@ -41,7 +41,28 @@ class ChatApi extends BaseController
 		//好友列表
 		$friendList = $friendService->getFriendList($uid);
 
-		$data = ["mine" => ["id" => $myInfo['id'], "username" => $myInfo['username'], "status" => MemberEnum::getEnumName($myInfo['fettle']), "sign" => $myInfo['signature'], "avatar" => getAvatar($myInfo['avatar']),], "friend" => $friendList, "group" => [["groupname" => "前端群", "id" => "101", "avatar" => "//tva1.sinaimg.cn/crop.0.0.200.200.50/006q8Q6bjw8f20zsdem2mj305k05kdfw.jpg",], ["groupname" => "Fly社区官方群", "id" => "102", "avatar" => "//tva2.sinaimg.cn/crop.0.0.199.199.180/005Zseqhjw1eplix1brxxj305k05kjrf.jpg",],],];
+		$data = [
+			"mine"   => [
+				"id"       => $myInfo['id'],
+				"username" => $myInfo['username'],
+				"status"   => MemberEnum::getEnumName($myInfo['fettle']),
+				"sign"     => $myInfo['signature'],
+				"avatar"   => getAvatar($myInfo['avatar']),
+			],
+			"friend" => $friendList,
+			"group"  => [
+				[
+					"groupname" => "前端群",
+					"id"        => "101",
+					"avatar"    => "//tva1.sinaimg.cn/crop.0.0.200.200.50/006q8Q6bjw8f20zsdem2mj305k05kdfw.jpg",
+				],
+				[
+					"groupname" => "Fly社区官方群",
+					"id"        => "102",
+					"avatar"    => "//tva2.sinaimg.cn/crop.0.0.199.199.180/005Zseqhjw1eplix1brxxj305k05kjrf.jpg",
+				],
+			],
+		];
 
 		returnData($data);
 	}

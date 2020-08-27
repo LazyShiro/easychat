@@ -13,6 +13,8 @@ class RecordService
 
 	protected $roomModel;
 
+	protected $roomService;
+
 	protected $friendModel;
 
 	protected $memberModel;
@@ -21,6 +23,7 @@ class RecordService
 	{
 		$this->recordModel = new RecordDao;
 		$this->roomModel   = new RoomDao;
+		$this->roomService = new RoomService;
 		$this->friendModel = new FriendDao;
 		$this->memberModel = new MemberDao;
 	}
@@ -38,8 +41,7 @@ class RecordService
 	 */
 	public function getChatHistory($uid, $friendId, $keyword, $page, $limit)
 	{
-		$roomNumber = getRoomNumber($uid, $friendId);
-		$roomInfo   = $this->roomModel->getInfoByNumber($roomNumber, 'id');
+		$roomInfo   = $this->roomService->getRoomInfo($uid, $friendId, 'id');
 		$recordList = $this->recordModel->getListByRoomId($roomInfo['id'], $page, $limit, $keyword, 'id,uid,content,createtime');
 
 		$list = [];

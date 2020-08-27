@@ -2,8 +2,10 @@
 
 namespace app\data\service;
 
+use app\data\dao\FileDao;
 use app\data\dao\MemberDao;
 use app\data\dao\MemberLogDao;
+use app\data\service\QiNiuService;
 
 class MemberService
 {
@@ -193,6 +195,60 @@ class MemberService
 		}
 
 		return $token;
+	}
+
+	/**
+	 * 上传头像
+	 *
+	 * @param $base64
+	 * @param $type
+	 *
+	 * @return string
+	 */
+	public function uploadAvatar($base64, $type)
+	{
+		$qiNiuService   = new QiNiuService;
+		$fileModel      = new FileDao;
+		$memberModel    = new MemberDao;
+		$memberLogModel = new MemberLogDao;
+
+		$uid = getUid();
+
+		$fileName = md5($base64);
+		$pathName = $this->saveBase64($base64, app()->getRootPath() . '/public/upload/avatar/', $fileName, $type);
+
+		$key = $qiNiuService->uploadAvatar($fileName . '.' . $type, $pathName);
+
+		$fileId = $fileModel->addFile($key, $uid);
+		$memberModel->editAvatar($uid, $fileId);
+		$memberLogModel->addAvatarLog($uid, $fileId);
+
+		return env('app.resource_url') . $key;
+	}
+
+	/**
+	 * 保存base64图片到本地
+	 *
+	 * @param $base64
+	 * @param $path
+	 * @param $name
+	 * @param $type
+	 *
+	 * @return bool|string
+	 */
+	private function saveBase64($base64, $path, $name, $type)
+	{
+		$pathName = $path;
+		if (!file_exists($pathName)) {
+			//检查是否有该文件夹，如果没有就创建，并给予最高权限
+			mkdir($pathName, 0777, TRUE);
+		}
+		$pathName = $pathName . $name . ".{$type}";
+		if (file_put_contents($pathName, base64_decode($base64))) {
+			return $pathName;
+		} else {
+			return FALSE;
+		}
 	}
 
 }
