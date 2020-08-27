@@ -95,11 +95,19 @@
                 });
             } else if (cmd === 'receipt.friendFettle') {
                 layim.setFriendStatus(contentData.id, contentData.status);
-                layim.setChatStatus('<span style="color:#FF5722;">' + contentData.status + '</span>');
+                // layim.setChatStatus('<span style="color:#FF5722;">' + contentData.status + '</span>');
             } else if (cmd === 'receipt.chatReceive') {
                 layim.getMessage(contentData);
             } else if (cmd === 'receipt.friendAvatar') {
                 $('.layim-friend' + contentData.id + ' img').attr('src', contentData.avatar);
+            } else if (cmd === 'receipt.typingMessage') {
+                let typingMessageStatus = $("#typingMessage").html();
+                if (typingMessageStatus === undefined) {
+                    $('.layim-chat-other').append("<p class='layim-chat-typing'><span id='typingMessage'>正在输入中...</span></p>");
+                    setTimeout(function () {
+                        $(".layim-chat-typing").remove();
+                    }, 1000)
+                }
             }
         };
         ws.onopen = function () {
@@ -385,6 +393,23 @@
             })
         })
 
+        $(document).on("change keydown paste", ".layim-chat-textarea textarea", function () {
+            let value = $('.layim-chat-textarea textarea').val(),
+                friendClass = $("#layui-layim-chat .layim-chat-other img").attr('class'),
+                friendId = friendClass.substring(12),
+                timestamp = (new Date()).valueOf(),
+                sendSwitch = timestamp % 4 === 0;
+            if (sendSwitch) {
+                let sendData = {
+                    'cmd': 'chat.typingMessage',
+                    'data': {
+                        'friendId': friendId,
+                        'content': value
+                    }
+                };
+                ws.send(JSON.stringify(sendData));
+            }
+        });
     });
 
 </script>
