@@ -82,7 +82,6 @@
     // 关闭裁剪框
     function closeTailor() {
         $(".tailoring-container").toggle();
-        window.location.reload();
     }
 
     layui.use(['layim', 'form'], function () {
@@ -186,7 +185,7 @@
                 url: "{:url('api/memberApi/editAvatar')}",
                 type: 'POST',
                 data: JSON.stringify({img: img}),
-                async: true,
+                dataType: "json",
                 success: function (data) {
                     if (data.code === 100000) {
                         let sendData = {
