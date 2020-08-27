@@ -1,0 +1,13 @@
+.account-search {
+    width: 80%;
+    margin: 5% auto;
+}
+
+.account-search-account {
+    display: inline-block;
+    width: 50%;
+}
+
+.account-search-submit, .account-search-account-reset {
+    margin-left: 0.2rem;
+}
