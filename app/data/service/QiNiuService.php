@@ -13,13 +13,13 @@ class QiNiuService
 
 	protected $bucket;
 
-	protected $avatarPath = 'path';
+	protected $avatarPath = 'chat/avatar/';
 
 	public function __construct()
 	{
-		$this->accessKey = 'AK';
-		$this->secretKey = 'SK';
-		$this->bucket    = 'bucket';
+		$this->accessKey = env('qiniu.access_key');
+		$this->secretKey = env('qiniu.secret_key');
+		$this->bucket    = env('qiniu.bucket');
 	}
 
 	public function uploadAvatar($name, $path)
